@@ -67,18 +67,18 @@ module.exports = app => {
           result.summary = summary;
 
           //Creates a new Article
-          db.Article.create(result)
+          db.Article.create()
             .then(dbArticle => {
-              console.log("\nArticle scraped: ${dbArticle}");
+              console.log("\nArticle scraped:" + dbArticle);
             })
             .catch(err => {
-              console.log("\nError while saving to database: ${err}");
+              console.log("\nError while saving to database:" + err);
             });
         });
         res.redirect("/articles");
       })
       .catch(error => {
-        console.log("Error while getting data from url: ${error}");
+        console.log("Error while getting data from url: " + error);
       });
   });
 

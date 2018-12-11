@@ -15,6 +15,17 @@
                     {{/if}}
                 </div>
             </div>
+            <hr>
+            {{#if this.comments}}
+                <div class="row">
+                    <div class="col-lg-8 cardblock">
+                {{#each this.comment}}
+                        <hr>
+                        <p class="card-text">{{this.comment}}</p>
+                {{/each}}
+                    </div>
+                </div>
+            {{/if}}
         </div>
     {{/each}}
 </div>

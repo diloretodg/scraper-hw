@@ -1,12 +1,12 @@
 //Dependencies
 const express = require('express');
 const mongoose = require('mongoose');
-const handlebars = require('express-handlebars');
+const exphbs = require('express-handlebars');
 const logger = require('morgan');
 
 
 let PORT = process.env.PORT || 3000;
-let MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/news_scraper';
+let MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/scraper-hw';
 
 //Init Express
 const app = express();
@@ -17,10 +17,10 @@ app.use(logger('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 //Uses the express.static middleware to serve the static portions of the app
-app.use(express.static("public"));
+app.use(express.static(__dirname + './public'));
 
-app.engine('handlebars', handlebars({defaultLayout: 'main'}));
-app.set('view engine', 'handlebars');
+app.engine('hbs', exphbs({defaultLayout: 'main', extname: '.hbs'}));
+app.set('view engine', 'hbs');
 
 //Config database
 mongoose.Promise = Promise;

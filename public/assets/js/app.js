@@ -1,4 +1,5 @@
 $(() => {
+  console.log("this is linked")
   //declare all functions
   const scrapeArticle = () => {
     $.get("/scrape").then(data => {
