@@ -1,5 +1,4 @@
 $(() => {
-  console.log("this is linked")
   //declare all functions
   const scrapeArticle = () => {
     $.get("/scrape").then(data => {
@@ -31,7 +30,6 @@ $(() => {
 
   const viewComments = function() {
     let articleId = $(this).data("id");
-
     //Send request to grab the articles comments
     $.ajax({
       url: `/article/${articleId}`,
@@ -40,13 +38,13 @@ $(() => {
       $('.modal-content').html(
             `<div class="modal-header">
                 <h4 class="modal-title">${data.title}</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close delete" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
-                </button>)
+                </button>
             </div>
             <div class="modal-body">
                 <ul class="list-group"></ul>
-                <textarea name="comment" class="comment-content"></textarea>
+                <textarea name="comment" class="comment-content w-100"></textarea>
             </div>
             <div class="modal-footer">
                 <button type="button" data-id="${
@@ -55,30 +53,25 @@ $(() => {
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>`
             );
-
-      let totalComments = data.comment.length;
-
       //If there are no comments
-      if (totalComments == 0) {
+      if(!data.comment){
         let message = `<small class="text-muted">This article does not have any comments yet.</small>`;
         $(".modal-content").prepend(message);
-      }
+      } else {
       //If comments exist
-      else {
         let comments = data.comment;
         //loops through comments and appends to modal
         comments.forEach(comment => {
           $(".list-group").append(
-            `<li class="list-group-item justify-content-between">
-                        ${comment.body}
-                        <span><i class="material-icons" data-id="${
-                          comment._id
-                        }">delete_forever</i></span>
-                    </li>`
+            `<li class="list-group-item  justify-content-between">
+                ${comment.body}
+                  <span><i class="material-icons float-right delete" data-id="${
+                  comment._id
+                  }">delete_forever</i></span>
+              </li>`
           );
         });
       }
-
       $(".modal").modal("show");
     });
   };
@@ -130,7 +123,7 @@ $(() => {
   $(".scrape").on("click", scrapeArticle);
   $(".btn-save").on("click", saveArticle);
   $(".btn-remove").on("click", removeArticle);
-  $(".btn-view-comments").on("click", viewComments);
+  $(".view-comments").on("click", viewComments);
 
   //Click events for dynamically created elements
   $(document).on("click", ".btn-save-comment", saveComment);

@@ -4,34 +4,21 @@
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons"rel="stylesheet"/>
-        <!--<link rel="stylesheet" href="/assets/css/style.css"/>-->
-        <title>NPR News Scraper</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons"rel="stylesheet"/><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <link rel="stylesheet" href="./Main.css">
+        <title>News Scraper HW</title>
     </head>
 
     <body>
-        <nav class="navbar navbar-toggleable-md navbar-light">
-            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle Navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <a class="navbar-brand" href="/">News Scraper</a>
-
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/saved">Saved Articles</a>
-                    </li>
-                    <li class="nav-item">
-                        <button class="btn btn-danger scrape" type="button">Scrape New Articles</button>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-
+      <nav class="navbar navbar-light bg-light">
+        <a href="/" class="navbar-brand mb-0 h1 text-secondary">Home</a>
+        <a class="float-right px-2 mx-1 mb-0 h5 text-secondary border-right"href="/saved">Saved Articles</a>
+      </nav>
+       
         <div class="jumbotron jumbotron-fluid">
             <div class="container">
-                <h1 class="display-3">Mongo Scraper</h1>
-                <p class="lead">NPR Edition</p>
+                <h1 class="display-3">News Scraper HW</h1>
+                <a id="scrape" class="btn btn-success">Scrape!</a>
             </div>
         </div>
 
@@ -40,143 +27,7 @@
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-        <script >$(() => {
-  console.log("this is linked")
-  //declare all functions
-  const scrapeArticle = () => {
-    $.get("/scrape").then(data => {
-      $("body").html(data);
-    });
-  };
-
-  const saveArticle = function() {
-    let id = $(this).data("id");
-
-    $.ajax({
-      url: `/article/${id}`,
-      method: "PUT"
-    }).then(data => {
-      location.reload();
-    });
-  };
-
-  const removeArticle = function() {
-    let id = $(this).data("id");
-
-    $.ajax({
-      url: `/saved/remove/${id}`,
-      method: "PUT"
-    }).then(data => {
-      location.reload();
-    });
-  };
-
-  const viewComments = function() {
-    let articleId = $(this).data("id");
-
-    //Send request to grab the articles comments
-    $.ajax({
-      url: `/article/${articleId}`,
-      method: "GET"
-    }).then(data => {
-      $('.modal-content').html(
-            `<div class="modal-header">
-                <h4 class="modal-title">${data.title}</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>)
-            </div>
-            <div class="modal-body">
-                <ul class="list-group"></ul>
-                <textarea name="comment" class="comment-content"></textarea>
-            </div>
-            <div class="modal-footer">
-                <button type="button" data-id="${
-                  data._id
-                }" class="btn btn-primary btn-save-comment">Save Comment</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>`
-            );
-
-      let totalComments = data.comment.length;
-
-      //If there are no comments
-      if (totalComments == 0) {
-        let message = `<small class="text-muted">This article does not have any comments yet.</small>`;
-        $(".modal-content").prepend(message);
-      }
-      //If comments exist
-      else {
-        let comments = data.comment;
-        //loops through comments and appends to modal
-        comments.forEach(comment => {
-          $(".list-group").append(
-            `<li class="list-group-item justify-content-between">
-                        ${comment.body}
-                        <span><i class="material-icons" data-id="${
-                          comment._id
-                        }">delete_forever</i></span>
-                    </li>`
-          );
-        });
-      }
-
-      $(".modal").modal("show");
-    });
-  };
-
-  const saveComment = function() {
-    let id = $(this).data("id");
-    let content = $(".comment-content")
-      .val()
-      .trim();
-
-    if (content) {
-      $.ajax({
-        url: `/comment/${id}`,
-        method: "POST",
-        data: { body: content }
-      }).then(data => {
-        //clears comment field
-        $(".comment-content").val("");
-        //Hide modal
-        $(".modal").modal("hide");
-      });
-    } else {
-      $(".comment-content").val("");
-      return;
-    }
-  };
-
-  const deleteComment = function() {
-    let id = $(this).data("id");
-
-    $.ajax({
-      url: `/comment/${id}`,
-      method: "DELETE"
-    }).then(data => {
-      $(".modal").modal("hide");
-    });
-  };
-
-  //Hides the scrape button if on the 'saved' page
-  if (window.location.href.includes("saved")) {
-    $(".scrape").hide();
-  }
-
-  //Scrollbar fix
-  const contentBox = $(".comment-content");
-  contentBox.scrollTop = contentBox.scrollHeight;
-
-  //click events
-  $(".scrape").on("click", scrapeArticle);
-  $(".btn-save").on("click", saveArticle);
-  $(".btn-remove").on("click", removeArticle);
-  $(".btn-view-comments").on("click", viewComments);
-
-  //Click events for dynamically created elements
-  $(document).on("click", ".btn-save-comment", saveComment);
-  $(document).on("click", ".material-icons", deleteComment);
-});</script>
+        <script src="./app.js"></script>
+       
     </body>
 </html>

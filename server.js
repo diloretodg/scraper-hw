@@ -17,7 +17,7 @@ app.use(logger('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 //Uses the express.static middleware to serve the static portions of the app
-app.use(express.static(__dirname + './public'));
+app.use(express.static("public"))
 
 app.engine('hbs', exphbs({defaultLayout: 'main', extname: '.hbs'}));
 app.set('view engine', 'hbs');
